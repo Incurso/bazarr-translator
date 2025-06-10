@@ -102,9 +102,9 @@ for (const e of episodes) {
     }
 
     await fetch(`http://${config.HOST}:${config.PORT}/api/providers/episodes?seriesid=${e.sonarrSeriesId}&episodeid=${e.sonarrEpisodeId}`, { method: 'POST', headers, body: JSON.stringify(data), signal: AbortSignal.timeout(180000) })
-      .then(d => {
+      .then(async data => {
         console.timeEnd(`Downloaded subs for ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle}`)
-        return d.data.data
+        return (await data.json()).data
       })
       .catch(() => { console.error('Download taking to long skipping') })
 
