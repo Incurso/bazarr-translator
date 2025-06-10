@@ -106,14 +106,14 @@ for (const m of movies) {
       subtitle: sub.subtitle
     }
 
-    await fetch(`http://${config.HOST}:${config.PORT}/api/providers/movies?radarrid=${m.radarrId}`, { method: 'POST', headers, body: JSON.stringify(data), signal: AbortSignal.timeout(180000) })
+    await fetch(`http://${config.HOST}:${config.PORT}/api/providers/movies?radarrid=${m.radarrId}`, { method: 'POST', headers, body: JSON.stringify(data), signal: AbortSignal.timeout(120000) })
       .then(async data => {
         console.timeEnd(`Downloaded subs for ${movie.title} (${movie.year})`)
         return (await data.json()).data
       })
       .catch(() => console.error('Download taking to long skipping'))
 
-    movie = await fetch(`http://${config.HOST}:${config.PORT}/api/movies?radarrid[]=${m.radarrId}`, { method: 'GET', headers})
+    movie = await fetch(`http://${config.HOST}:${config.PORT}/api/movies?radarrid[]=${m.radarrId}`, { method: 'GET', headers, signal: AbortSignal.timeout(120000) })
       .then(async data => (await data.json()).data[0])
       .catch(err => console.error(`Unable to re-fetch movie data from Bazarr: ${err}`))
 

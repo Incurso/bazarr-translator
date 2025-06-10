@@ -101,14 +101,14 @@ for (const e of episodes) {
       subtitle: sub.subtitle
     }
 
-    await fetch(`http://${config.HOST}:${config.PORT}/api/providers/episodes?seriesid=${e.sonarrSeriesId}&episodeid=${e.sonarrEpisodeId}`, { method: 'POST', headers, body: JSON.stringify(data), signal: AbortSignal.timeout(180000) })
+    await fetch(`http://${config.HOST}:${config.PORT}/api/providers/episodes?seriesid=${e.sonarrSeriesId}&episodeid=${e.sonarrEpisodeId}`, { method: 'POST', headers, body: JSON.stringify(data), signal: AbortSignal.timeout(120000) })
       .then(async data => {
         console.timeEnd(`Downloaded subs for ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle}`)
         return (await data.json()).data
       })
       .catch(() => { console.error('Download taking to long skipping') })
 
-    episode = await fetch(`http://${config.HOST}:${config.PORT}/api/episodes?episodeid[]=${e.sonarrEpisodeId}`, { method: 'GET', headers })
+    episode = await fetch(`http://${config.HOST}:${config.PORT}/api/episodes?episodeid[]=${e.sonarrEpisodeId}`, { method: 'GET', headers, signal: AbortSignal.timeout(120000) })
       .then(async data => (await data.json()).data[0])
       .catch(err => console.error(`Unable to re-fetch episode data from Bazarr: ${err}`))
 
