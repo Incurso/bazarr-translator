@@ -64,8 +64,8 @@ for (const e of episodes) {
     log(`Searching subs for ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle}`)
     
     const subs = await fetch(`http://${config.HOST}:${config.PORT}/api/providers/episodes?episodeid=${e.sonarrEpisodeId}`, { method: 'GET', headers })
-      .then(d => d.data.data)
-      .catch(err => console.error(`Unable to search subs form movie ${e.SeriesTitle} (${e.episode_number}) ${e.episodeTitle} from Bazarr: ${err}`))
+      .then(async data => (await data.json()).data)
+      .catch(err => console.error(`Unable to search subs for episode ${e.SeriesTitle} (${e.episode_number}) ${e.episodeTitle} from Bazarr: ${err}`))
 
     console.timeEnd(`Searched subs for ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle}`)
     
@@ -109,7 +109,7 @@ for (const e of episodes) {
       .catch(() => { console.error('Download taking to long skipping') })
 
     episode = await fetch(`http://${config.HOST}:${config.PORT}/api/episodes?episodeid[]=${e.sonarrEpisodeId}`, { method: 'GET', headers })
-      .then(d => d.data.data[0])
+      .then(async data => (await data.json()).data[0])
       .catch(err => console.error(`Unable to re-fetch episode data from Bazarr: ${err}`))
 
     // If getting episode data failed skip
