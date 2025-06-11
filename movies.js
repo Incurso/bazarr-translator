@@ -111,7 +111,7 @@ for (const m of movies) {
         console.timeEnd(`Downloaded subs for ${movie.title} (${movie.year})`)
         return (await data.json()).data
       })
-      .catch(() => console.error('Download taking to long skipping'))
+      .catch(() => console.error('Download taking to long skipping while Bazarr handles the download.'))
 
     movie = await fetch(`http://${config.HOST}:${config.PORT}/api/movies?radarrid[]=${m.radarrId}`, { method: 'GET', headers, signal: AbortSignal.timeout(120000) })
       .then(async data => (await data.json()).data[0])
