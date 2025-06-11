@@ -46,10 +46,12 @@ episodes.sort((a, b) => {
 
 const missing_isl = []
 
-for (const e of episodes) {
+for (const [index, e] of episodes.entries()) {
   let episode = await fetch(`http://${config.HOST}:${config.PORT}/api/episodes?episodeid[]=${e.sonarrEpisodeId}`, { method: 'GET', headers})
     .then(async data => (await data.json()).data[0])
     .catch(err => console.error(`Unable to fetch episode data from Bazarr: ${err}`))
+
+  log(`[${index + 1}/${episodes.length}] ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle}`)
 
   if (episode === undefined) {
     log('Failed to get episode data, skipping...')
@@ -65,7 +67,7 @@ for (const e of episodes) {
     
     const subs = await fetch(`http://${config.HOST}:${config.PORT}/api/providers/episodes?episodeid=${e.sonarrEpisodeId}`, { method: 'GET', headers })
       .then(async data => (await data.json()).data)
-      .catch(err => console.error(`Unable to search subs for episode ${e.SeriesTitle} (${e.episode_number}) ${e.episodeTitle} from Bazarr: ${err}`))
+      .catch(err => console.error(`Unable to search subs for episode ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle} from Bazarr: ${err}`))
 
     console.timeEnd(`Searched subs for ${e.seriesTitle} (${e.episode_number}) ${e.episodeTitle}`)
     

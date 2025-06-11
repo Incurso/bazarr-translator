@@ -47,10 +47,12 @@ movies.sort((a, b) => {
 const missing_isl = []
 
 
-for (const m of movies) {
+for (const [index, m] of movies.entries()) {
   let movie = await fetch(`http://${config.HOST}:${config.PORT}/api/movies?radarrid[]=${m.radarrId}`, { method: 'GET', headers })
     .then(async data => (await data.json()).data[0])
     .catch(err => console.error(`Unable to fetch movie data from Bazarr: ${err}`))
+  
+  log(`[${index + 1}/${movies.length}] ${m.title} (${movie.year})`)
 
   if (config.DEBUG) console.debug('DEBUG', movie)
 
